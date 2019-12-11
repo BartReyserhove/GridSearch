@@ -126,6 +126,7 @@ define([
 				self._fireSearch();
 			}, 250);
 		},
+		
 		_fireSearch: function () {
 			var constraints;
 			this._findSearchableLists();

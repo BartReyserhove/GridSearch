@@ -28,7 +28,7 @@
 			<category>Appearance</category>
 			<description>Whether to display a bar chart of how many results each filter will return.</description>
 		</property>
-		<property key="filterLabel" type="translatableString" required="true">
+		<property key="filterLabel" type="translatableString" required="false">
 			<caption>Filter Label</caption>
 			<category>Appearance</category>
 			<description>A label to be used by the Active Filters widget when this widget has an active filter.</description>

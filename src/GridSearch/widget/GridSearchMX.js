@@ -51,17 +51,20 @@ define([
 
         update: function (obj, callback) {
 
-            this._setupGrid();
+            this._setupGrid(this._finishGridSetup.bind(this));        
             if (!this._renderingComplete || this._contextObj !== obj) {
                 this._contextObj = obj;
-                this._currentFilter = null;
-                this.onSearchChanged();
                 this._updateRendering(callback);
             } else {
                 if (callback) { callback() };
             }
 
         },
+
+        _finishGridSetup(){
+            this._fireSearchWithDelay();
+        },
+
         _updateRendering: function (callback) {
             //clean up any old widget before building a new one
             if (this.searchWidget) {
@@ -101,7 +104,7 @@ define([
                     };
                 }
             } else if (this._type === "dropdown") {
-                parameters.defaults = null;
+                //parameters.defaults = null;
                 if (this._searchEntity === this.gridEntity) {
                     if (this._attributeType === "boolean") {
                         parameters.retriever = "Bool";

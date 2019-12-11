@@ -18,7 +18,7 @@
 			<category>List</category>
 			<description>(Optional) Instead of a list/grid name, you can enter the CSS class of one or more grids here. Any grids on the page with this class will be connected.</description>
 		</property>
-		<property key="filterLabel" type="translatableString" required="true">
+		<property key="filterLabel" type="translatableString" required="false">
 			<caption>Filter Label</caption>
 			<category>Appearance</category>
 			<description>A label to be used by the Active Filters widget when this widget has an active filter.</description>

@@ -26,7 +26,7 @@
 		</property>
 
 		<!-- APPEARANCE -->
-		<property key="filterLabel" type="translatableString" required="true">
+		<property key="filterLabel" type="translatableString" required="false">
 			<caption>Filter Label</caption>
 			<category>Appearance</category>
 			<description>A label to be used by the Active Filters widget when this widget has an active filter.</description>
