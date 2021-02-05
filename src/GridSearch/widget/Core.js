@@ -49,7 +49,7 @@ define([
 		_getSearchConstraint: function () {
 			console.error("Widget not implemented properly. A searching widget should implement a _getSearchContraint function.")
 		},
-		_clear: function () {
+		_clear: function (shouldReload) {
 			//this function should clear the search widget
 			console.error("Widget not implemented properly. A searching widget should implement a _clear function.")
 		},
@@ -154,25 +154,27 @@ define([
 			}
 
 			if (datasource._constraints !== constraints) {
-				datasource.setConstraints(constraints);
-				//if the grid is set to wait for search, ensure we set the "_searchFilled" flag
-				if (grid.config && grid.config.gridpresentation && grid.config.gridpresentation.waitforsearch) {
-					if (constraints) {
-						grid._searchFilled = true;
-					} else {
-						//grid._searchFilled = false; //grid doesn't refresh or empty if you do this
-						datasource.setConstraints("[1=0]");
+				if (grid.__customWidgetDataSourceHelper) {
+					//Using ListViewControls
+					grid.__customWidgetDataSourceHelper.store.constraints._none["GridSearch"] = constraints;
+				} else {
+					//No ListViewControls
+						datasource.setConstraints(constraints);
+						//if the grid is set to wait for search, ensure we set the "_searchFilled" flag
+						if (grid.config && grid.config.gridpresentation && grid.config.gridpresentation.waitforsearch) {
+							if (constraints) {
+								grid._searchFilled = true;
+							} else {
+								//grid._searchFilled = false; //grid doesn't refresh or empty if you do this
+								datasource.setConstraints("[1=0]");
+							}
+						}
 					}
-				}
-				self.onSearchChanged();
-				self._reloadOneGrid(grid);
-				console.log("set constraints for grid: " + grid.id)
+					self.onSearchChanged();
+					self._reloadOneGrid(grid);
+					console.log("set constraints for grid: " + grid.id)
 			} else {
 				console.log("did not set constraints for grid as they did not change: " + grid.id)
-			}
-			//duct tape and glue connection to the List View Controls widget
-			if (grid.__customWidgetDataSourceHelper) {
-				grid.__customWidgetDataSourceHelper.store.constraints._none["GridSearch"] = constraints;
 			}
 		},
 		_getSearchConstraintAllSearchBoxes: function () {
@@ -188,9 +190,8 @@ define([
 			var searchWidgets = this._searchWidgets[this.targetGridClass];
 
 			for (var i = 0; i < searchWidgets.length; i++) {
-				searchWidgets[i]._clear();
+				searchWidgets[i]._clear(false);
 			}
-
 			this._fireSearch();
 		},
 		_reloadGrid: function () {
@@ -203,7 +204,7 @@ define([
 			if (grid.__customWidgetDataSourceHelper) {
 				var dsh = grid.__customWidgetDataSourceHelper
 				dsh.requiresUpdate = true;
-				dsh.iterativeUpdateDataSource();
+				dsh.updateDataSource(function() {});
 			} else {
 				this._startProgressBarDelay();
 				if (grid.reload) {
@@ -252,7 +253,7 @@ define([
 				if (!this._activeFilterDiv) {
 					this._activeFilterDiv = document.createElement("div");
 					this._activeFilterDiv.addEventListener("click", dojoLang.hitch(this, function () {
-						this._clear();
+						this._clear(false);
 						this.onSearchChanged();
 						this._fireSearch();
 					}));
@@ -304,7 +305,7 @@ define([
 						listenerWidget.searchWidget._datasource.reload();
 						// reinit
 						listenerWidget.searchWidget.reinit();
-						listenerWidget._clear();
+						listenerWidget._clear(true);
 					}
 				} else {
 					listenerWidget.searchWidget._datasource.setConstraints();
@@ -312,7 +313,7 @@ define([
 					listenerWidget.searchWidget._datasource.reload();
 					// reinit
 					listenerWidget.searchWidget.reinit();
-					listenerWidget._clear();
+					listenerWidget._clear(true);
 				}
 			}
 		}
